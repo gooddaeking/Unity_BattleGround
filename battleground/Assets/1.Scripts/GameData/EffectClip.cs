@@ -11,7 +11,7 @@ public class EffectClip
 {   //추후 속성은 같지만 다른 이펙트 클립이 있을 수 있어서 분별용.
     public int realId = 0;
 
-    public EffectType effectTpye = EffectType.NORMAL;
+    public EffectType effectType = EffectType.NORMAL;
     public GameObject effectPrefab = null;
     public string effectName = string.Empty;
     public string effectPath = string.Empty;

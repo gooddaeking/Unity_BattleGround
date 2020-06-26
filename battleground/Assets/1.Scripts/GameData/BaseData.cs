@@ -18,9 +18,9 @@ public class BaseData : ScriptableObject
     {
         int retValue = 0;
 
-        if(this.name != null)
+        if(this.names != null)
         {
-            retValue = this.name.Length;
+            retValue = this.names.Length;
         }
 
         return retValue;

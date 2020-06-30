@@ -108,6 +108,7 @@ public class SoundTool : EditorWindow
                             EditorGUILayout.EndVertical();
                         }
                     }
+                    EditorGUILayout.EndScrollView();////////////
                 }
                 EditorGUILayout.EndVertical();
             }

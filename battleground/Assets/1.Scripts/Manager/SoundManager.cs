@@ -322,4 +322,183 @@ public class SoundManager : SingletonMonobehaviour<SoundManager>
             this.currentPlayingType = MusicPlayingType.None;
         }
     }
+
+    public void FadeTo(SoundClip clip, float time, Interpolate.EaseType ease)
+    {
+        if(currentPlayingType == MusicPlayingType.None)
+        {
+            FadeIn(clip, time, ease);
+        }
+        else if(this.IsDifferentSound(clip))
+        {
+            if(this.currentPlayingType == MusicPlayingType.AtoB)
+            {
+                this.fadeA_audio.Stop();
+                this.currentPlayingType = MusicPlayingType.SourceB;
+            }
+            else if (this.currentPlayingType == MusicPlayingType.BtoA)
+            {
+                this.fadeB_audio.Stop();
+                this.currentPlayingType = MusicPlayingType.SourceA;
+            }
+            lastSound = currentSound;
+            currentSound = clip;
+            this.lastSound.FadeOut(time, ease);
+            this.currentSound.FadeIn(time, ease);
+            if(currentPlayingType == MusicPlayingType.SourceA)
+            {
+                PlayAudioSource(fadeB_audio, currentSound, 0.0f);
+                currentPlayingType = MusicPlayingType.AtoB;
+            }
+            else if(currentPlayingType == MusicPlayingType.SourceB)
+            {
+                PlayAudioSource(fadeA_audio, currentSound, 0.0f);
+                currentPlayingType = MusicPlayingType.BtoA;
+            }
+            if(currentSound.HasLoop())
+            {
+                this.isTicking = true;
+                DoCheck();
+            }
+        }
+    }
+
+    public void FadeTo(int index, float time, Interpolate.EaseType ease)
+    {
+        this.FadeTo(DataManager.SoundData().GetCopy(index), time, ease);
+    }
+    public void PlayBGM(SoundClip clip)
+    {
+        if(this.IsDifferentSound(clip))
+        {
+            this.fadeB_audio.Stop();
+            this.lastSound = this.currentSound;
+            this.currentSound = clip;
+            PlayAudioSource(fadeA_audio, clip, clip.maxVolume);
+            if(currentSound.HasLoop())
+            {
+                this.isTicking = true;
+                DoCheck();
+            }
+        }
+    }
+    public void PlayBGM(int index)
+    {
+        SoundClip clip = DataManager.SoundData().GetCopy(index);
+        PlayBGM(clip);
+    }
+    public void PlayUISound(SoundClip clip)
+    {
+        PlayAudioSource(UI_audio, clip, clip.maxVolume);
+    }
+    public void PlayEffectSound(SoundClip clip)
+    {
+        bool isPlaySuccess = false;
+        for (int i = 0; i < this.EffectChannelCount; i++)
+        {
+            if (this.effect_audios[i].isPlaying == false)
+            {
+                PlayAudioSource(this.effect_audios[i], clip, clip.maxVolume);
+                this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
+                isPlaySuccess = true;
+                break;
+            }
+            else if(this.effect_audios[i].clip == clip.GetClip())
+            {
+                this.effect_audios[i].Stop();
+                PlayAudioSource(effect_audios[i], clip, clip.maxVolume);
+                this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
+                isPlaySuccess = true;
+                break;
+            }
+        }
+        if (isPlaySuccess == false)
+        {
+            float maxTime = 0.0f;
+            int selectIndex = 0;
+            for (int i = 0; i < EffectChannelCount; i++)
+            {
+                if(this.effect_PlayStartTime[i] > maxTime)
+                {
+                    maxTime = this.effect_PlayStartTime[i];
+                    selectIndex = i;
+                }
+            }
+            PlayAudioSource(this.effect_audios[selectIndex], clip, clip.maxVolume);
+        }
+    }
+
+    public void PlayEffectSound(SoundClip clip, Vector3 position, float volume)
+    {
+        bool isPlaySuccess = false;
+        for (int i = 0; i < this.EffectChannelCount; i++)
+        {
+            if (this.effect_audios[i].isPlaying == false)
+            {
+                PlayAudioSourceAtPoint(clip, position, volume);
+                this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
+                isPlaySuccess = true;
+                break;
+            }
+            else if (this.effect_audios[i].clip == clip.GetClip())
+            {
+                this.effect_audios[i].Stop();
+                PlayAudioSourceAtPoint(clip, position, volume);
+                this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
+                isPlaySuccess = true;
+                break;
+            }
+        }
+        if (isPlaySuccess == false)
+        {
+            PlayAudioSourceAtPoint(clip, position, volume);
+        }
+    }
+
+    public void PlayOneShotEffect(int index, Vector3 position, float volume)
+    {
+        if(index == (int)SoundList.None)
+        {
+            return;
+        }
+
+        SoundClip clip = DataManager.SoundData().GetCopy(index);
+        if(clip == null)
+        {
+            return;
+        }
+        PlayEffectSound(clip, position, volume);
+    }
+    public void PlayOneShot(SoundClip clip)
+    {
+        if (clip == null)
+        {
+            return;
+        }
+        switch (clip.playType)
+        {
+            case SoundPlayType.EFFECT:
+                PlayEffectSound(clip);
+                break;
+            case SoundPlayType.BGM:
+                PlayBGM(clip);
+                break;
+            case SoundPlayType.UI:
+                PlayUISound(clip);
+                break;
+        }
+    }
+
+    public void Stop(bool allStop = false)
+    { 
+        if(allStop)
+        {
+            this.fadeA_audio.Stop();
+            this.fadeB_audio.Stop();
+        }
+
+        this.FadeOut(0.5f, Interpolate.EaseType.Linear);
+        this.currentPlayingType = MusicPlayingType.None;
+        StopAllCoroutines();
+    }
 }

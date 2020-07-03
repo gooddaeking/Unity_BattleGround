@@ -20,7 +20,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
     public float verticalAimingSpeed = 6.0f;    // 수직 회전 속도
     public float maxVerticalAngle = 30.0f;      // 수직 최대 각도
     public float minVerticalAngle = -60.0f;     // 수직 최소 각도
-    public float recoilAngleBound = 5.0f;       // 사격 반동 바운스 값
+    public float recoilAngleBounce = 5.0f;       // 사격 반동 바운스 값
     private float angleH = 0.0f;                // 마우스 이동에 따른 카메라 수평이동 수치
     private float angleV = 0.0f;                // 마우스 이동에 따른 카메라 수동이동 수치
     private Transform cameraTransform;          // 트랜스폼 캐싱
@@ -146,7 +146,32 @@ public class ThirdPersonOrbitCam : MonoBehaviour
         myCamera.fieldOfView = Mathf.Lerp(myCamera.fieldOfView, targetFOV, Time.deltaTime);
 
         Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
-        Vector3 noCollisionOffset = targetCamOffset; // 
-    }
+        Vector3 noCollisionOffset = targetCamOffset; // 조준할때 카메라의 오프셋값, 평소상태와 다름
+        for(float zOffset = targetCamOffset.z; zOffset <= 0.0f; zOffset += 0.5f)
+        {
+            noCollisionOffset.z = zOffset;
+            if (DoubleViewingPosCheck(baseTempPosition + aimRotation * noCollisionOffset,
+                Mathf.Abs(zOffset)) || zOffset == 0.0f)
+            {
+                break;
+            }
+        }
+        // Reposition Camera
+        smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
+        smoothCamOffset = Vector3.Lerp(smoothCamOffset, noCollisionOffset, smooth * Time.deltaTime);
+        cameraTransform.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
 
+        if(recoilAngle > 0.0f)
+        {
+            recoilAngle -= recoilAngleBounce * Time.deltaTime;
+        }
+        else if(recoilAngle < 0.0f)
+        {
+            recoilAngle += recoilAngleBounce * Time.deltaTime;
+        }
+    }
+    public float GetCurrentPivotMagnitude(Vector3 finalPivotOffset)
+    {
+        return Mathf.Abs((finalPivotOffset - smoothPivotOffset).magnitude);
+    }
 }

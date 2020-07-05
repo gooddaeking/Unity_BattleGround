@@ -26,7 +26,7 @@ public class EffectClip
             this.effectPrefab = ResourceManager.Load(effectFullPath) as GameObject;
         }
     }
-    public void RelesaseEffect()
+    public void ReleaseEffect()
     {
         if(this.effectPrefab != null)
         {
@@ -35,7 +35,6 @@ public class EffectClip
     }
     /// <summary>
     /// 원하는 위치에 원하는 이펙트를 인스턴스합니다.
-    /// </summary>
     public GameObject Instantiate(Vector3 Pos)
     {
         if(this.effectPrefab == null)

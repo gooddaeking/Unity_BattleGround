@@ -66,7 +66,7 @@ public class EffectData : BaseData
                             this.effectClips[currentID].effectName = reader.ReadString();
                             break;
                         case "effectPath":
-                            this.effectClips[currentID].effectPath = reader.ToString();
+                            this.effectClips[currentID].effectPath = reader.ReadString();
                             break;
 
                     }
@@ -127,7 +127,7 @@ public class EffectData : BaseData
     {
         foreach(EffectClip clip in this.effectClips)
         {
-            clip.RelesaseEffect();
+            clip.ReleaseEffect();
         }
         this.effectClips = null;
         this.names = null;

@@ -10,8 +10,8 @@ using UnityEngine;
 public class SoundClip
 {
     public SoundPlayType playType = SoundPlayType.None;
-    public string clipName = string.Empty;
-    public string clipPath = string.Empty;
+    public string soundName = string.Empty;
+    public string soundPath = string.Empty;
     public float maxVolume = 1.0f;
     public bool isLoop = false;
     public float[] checkTime = new float[0];
@@ -36,14 +36,14 @@ public class SoundClip
     public SoundClip() { }
     public SoundClip(string clipPath, string clipName)
     {
-        this.clipPath = clipPath;
-        this.clipName = clipName;
+        this.soundPath = clipPath;
+        this.soundName = clipName;
     }
     public void PreLoad()
     {
-        if(this.clip = null)
+        if(this.clip == null)
         {
-            string fullPath = this.clipPath + this.clipName;
+            string fullPath = this.soundPath + this.soundName;
             this.clip = ResourceManager.Load(fullPath) as AudioClip;
         }
     }
@@ -66,9 +66,9 @@ public class SoundClip
         {
             PreLoad();
         }
-        if(this.clip == null && this.clipName != string.Empty)
+        if(this.clip == null && this.soundName != string.Empty)
         {
-            Debug.LogWarning($"Can not Load audio clip Resource {this.clipName}");
+            Debug.LogWarning($"Can not Load audio clip Resource {this.soundName}");
             return null;
         }
         return this.clip;

@@ -43,6 +43,7 @@ public class EffectTool : EditorWindow
                 this.uiWidthMiddle);
             effectSource = (GameObject)source;
 
+
             EditorGUILayout.BeginHorizontal();
             {   //중간, 데이터 목록
                 EditorHelper.EditorToolListLayer(ref SP1, effectData, ref selection,
@@ -123,7 +124,7 @@ public class EffectTool : EditorWindow
     {
         string enumName = "EffectList";
         StringBuilder builder = new StringBuilder();
-        builder.AppendLine();
+        //builder.AppendLine();
         for (int i = 0; i < effectData.names.Length; i++)
         {
             if(effectData.names[i] != string.Empty)

@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7b3c761cff7f1342ac37a5a653b762d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 1766801224}
   pivotOffset: {x: 0, y: 1, z: 0}
   camOffset: {x: 0.4, y: 0.5, z: -2}
   smooth: 10
@@ -512,5 +512,46 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!4 &1766801224 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4675232436007860, guid: 325c2a72f558d4e419ec4f9ea74e54f5,
+    type: 3}
+  m_PrefabInstance: {fileID: 1766801219}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1766801225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766801220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba102f9cc4ade743bd4e48759ecf5fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSpeed: 0.15
+  runSpeed: 1
+  sprintSpeed: 2
+  speedDampTime: 0.1
+  jumpHeight: 1.5
+  jumpInertialForce: 10
+  speed: 0
+  speedSeeker: 0
+--- !u!114 &1766801226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766801220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4890c96ec3e3464ca022bef1f8afa68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 855001862}
+  turnSmoothing: 0.05
+  sprintFOV: 100

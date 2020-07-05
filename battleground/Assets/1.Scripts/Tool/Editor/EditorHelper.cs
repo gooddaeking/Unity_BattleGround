@@ -7,15 +7,12 @@ using System.IO;
 using System.Text;
 using NPOI.SS.Formula.Functions;
 using UnityObject = UnityEngine.Object;
-using System.Data;
 
 public class EditorHelper
 {
 
 	/// <summary>
 	/// 경로 계산 함수.
-	/// </summary>
-	/// <param name="p_clip"></param>
 	/// <returns></returns>
 	public static string GetPath(UnityEngine.Object p_clip)
 	{

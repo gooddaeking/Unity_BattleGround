@@ -14,12 +14,12 @@ public class SoundData : BaseData
 {
     public SoundClip[] soundClips = new SoundClip[0];
 
-    private string clipPath = "Sound/";
+    public string clipPath = "Sound/";
     private string xmlFilePath = "";
     private string xmlFileName = "soundData.xml";
     private string dataPath = "Data/soundData";
-    private static string SOUND = "sound";
-    private static string CLIP = "clip";
+    private const string SOUND = "sound";
+    private const string CLIP = "clip";
     public SoundData() { }
     
     public void SaveData()
@@ -41,7 +41,7 @@ public class SoundData : BaseData
                 xml.WriteElementString("maxvol", clip.maxVolume.ToString());
                 xml.WriteElementString("pitch", clip.pitch.ToString());
                 xml.WriteElementString("dopplerlevel", clip.dopplerLevel.ToString());
-                xml.WriteElementString("rolloffmod", clip.rolloffMode.ToString());
+                xml.WriteElementString("rolloffmode", clip.rolloffMode.ToString());
                 xml.WriteElementString("mindistance", clip.minDistance.ToString());
                 xml.WriteElementString("maxdistance", clip.maxDistance.ToString());
                 xml.WriteElementString("spatialblend", clip.spatialBlend.ToString());
@@ -49,8 +49,8 @@ public class SoundData : BaseData
                 {
                     xml.WriteElementString("loop", "true");
                 }
-                xml.WriteElementString("clippath", clip.clipPath);
-                xml.WriteElementString("clipname", clip.clipName);
+                xml.WriteElementString("clippath", clip.soundPath);
+                xml.WriteElementString("clipname", clip.soundName);
                 xml.WriteElementString("checktimecount", clip.checkTime.Length.ToString());
 
                 string str = "";
@@ -139,10 +139,10 @@ public class SoundData : BaseData
                             soundClips[currentID].isLoop = true;
                             break;
                         case "clippath":
-                            soundClips[currentID].clipPath = reader.ReadString();
+                            soundClips[currentID].soundPath = reader.ReadString();
                             break;
                         case "clipname":
-                            soundClips[currentID].clipName = reader.ReadString();
+                            soundClips[currentID].soundName = reader.ReadString();
                             break;
                         case "checktimecount":
                             break;
@@ -222,8 +222,8 @@ public class SoundData : BaseData
         SoundClip clip = new SoundClip();
         SoundClip original = soundClips[index];
         clip.realId = index;
-        clip.clipPath = original.clipPath;
-        clip.clipName = original.clipName;
+        clip.soundPath = original.soundPath;
+        clip.soundName = original.soundName;
         clip.maxVolume = original.maxVolume;
         clip.pitch = original.pitch;
         clip.dopplerLevel = original.dopplerLevel;

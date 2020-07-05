@@ -1,4 +1,4 @@
-﻿using NPOI.POIFS.Storage;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +10,7 @@ using UnityEngine;
 public class BehaviourController : MonoBehaviour
 {
     private List<GenericBehaviour> behaviours;          // 동작들
-    private List<GenericBehaviour> overrideBehaviour;   // 우선시 되는 동작
+    private List<GenericBehaviour> overrideBehaviours;   // 우선시 되는 동작
     private int currentBehaviour;   // 현재 동작 해시코드
     private int defaultBehaviour;   // 기본 동작 해시코드
     private int behaviourLocked;    // 잠긴 동작 해시코드
@@ -25,9 +25,9 @@ public class BehaviourController : MonoBehaviour
     // 속성들
     private float h;                    // horizontal axis
     private float v;                    // vertical axis
-    public float turnSmoothing = 0.05f; // 시선을 향할 때 회전속도
+    public float turnSmoothing = 0.06f; // 시선을 향할 때 회전속도
     private bool changedFOV;            // 달리기 동작이 카메라 시야각 변경되었을 때 저장되었나?
-    public float sprintFOC = 100;       // 달리기 시야각 
+    public float sprintFOV = 100;       // 달리기 시야각 
     private Vector3 lastDirection;      // 마지막 바라봤던 방향
     private bool sprint;                // 달리는 중인가?
     private int hFloat;                 // 애니메이션의 관련 가로축 값
@@ -45,7 +45,7 @@ public class BehaviourController : MonoBehaviour
     private void Awake()
     {
         behaviours = new List<GenericBehaviour>();
-        overrideBehaviour = new List<GenericBehaviour>();
+        overrideBehaviours = new List<GenericBehaviour>();
         myAnimator = GetComponent<Animator>();
         hFloat = Animator.StringToHash(FC.AnimatorKey.Horizontal);
         vFloat = Animator.StringToHash(FC.AnimatorKey.Vertical);
@@ -56,7 +56,7 @@ public class BehaviourController : MonoBehaviour
         groundedBool = Animator.StringToHash(FC.AnimatorKey.Grounded);
         colExtents = GetComponent<Collider>().bounds.extents;
     }
-    public bool isMoving()
+    public bool IsMoving()
     {
         //return (h != 0) || (v != 0);
         //float one = 0.15f + 0.15f;
@@ -78,7 +78,7 @@ public class BehaviourController : MonoBehaviour
                 return false;
             }
         }
-        foreach(GenericBehaviour genericBehaviour in overrideBehaviour)
+        foreach(GenericBehaviour genericBehaviour in overrideBehaviours)
         {
             if(!genericBehaviour.AllowSprint)
             {
@@ -87,14 +87,186 @@ public class BehaviourController : MonoBehaviour
         }
         return true;
     }
-    public bool isSprinting()
+    public bool IsSprinting()
     {
-        return sprint && isMoving() && CanSprint();
+        return sprint && IsMoving() && CanSprint();
     }
     public bool IsGrounded()
     {
         Ray ray = new Ray(myTransform.position + Vector3.up * 2 * colExtents.x, Vector3.down);
         return Physics.SphereCast(ray, colExtents.x, colExtents.x + 0.2f);
+    }
+    private void Update()
+    {
+        h = Input.GetAxis("Horizontal");
+        v = Input.GetAxis("Vertical");
+
+        myAnimator.SetFloat(hFloat, h, 0.1f, Time.deltaTime);
+        myAnimator.SetFloat(vFloat, v, 0.1f, Time.deltaTime);
+
+        sprint = Input.GetButton(ButtonName.Sprint);
+        if (IsSprinting())
+        {
+            changedFOV = true;
+            camScript.SetFOV(sprintFOV);
+        }
+        else if (changedFOV)
+        {
+            camScript.ResetFOV();
+            changedFOV = false;
+        }
+
+        myAnimator.SetBool(groundedBool, IsGrounded());
+    }
+
+    public void Repositioning()
+    {
+        if(lastDirection != Vector3.zero)
+        {
+            lastDirection.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(lastDirection);
+            Quaternion newRotation = Quaternion.Slerp(myRigidbody.rotation, targetRotation, turnSmoothing);
+            myRigidbody.MoveRotation(newRotation); 
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        bool isAnyBehaviourActive = false;
+        if(behaviourLocked > 0 || overrideBehaviours.Count == 0)
+        {
+            foreach(GenericBehaviour behaviour in behaviours)
+            {
+                if(behaviour.isActiveAndEnabled && currentBehaviour == behaviour.GetBehaviourCode)
+                {
+                    isAnyBehaviourActive = true;
+                    behaviour.LocalFixedUpdate();
+                }
+            }
+        }
+        else
+        {
+            foreach(GenericBehaviour behaviour in overrideBehaviours)
+            {
+                behaviour.LocalFixedUpdate();
+            }
+        }
+        if(!isAnyBehaviourActive && overrideBehaviours.Count == 0)
+        {
+            myRigidbody.useGravity = true;
+            Repositioning();
+        }
+    }
+    private void LateUpdate()
+    {
+        if(behaviourLocked > 0 || overrideBehaviours.Count == 0)
+        {
+            foreach(GenericBehaviour behaviour in behaviours)
+            {
+                if(behaviour.isActiveAndEnabled && currentBehaviour == behaviour.GetBehaviourCode)
+                {
+                    behaviour.LocalLateUpdate();
+                }
+            }
+        }
+        else
+        {
+            foreach(GenericBehaviour behaviour in overrideBehaviours)
+            {
+                behaviour.LocalLateUpdate();
+            }
+        }
+    }
+
+    public void SubScribeBehaviour(GenericBehaviour behaviour)
+    {
+        behaviours.Add(behaviour);
+    }
+    public void RegisterDefaultBehaviour(int behaviourCode)
+    {
+        defaultBehaviour = behaviourCode;
+        currentBehaviour = behaviourCode;
+    }
+    public void RegisterBehaviour(int behaviourCode)
+    {
+        if(currentBehaviour == defaultBehaviour)
+        {
+            currentBehaviour = behaviourCode;
+        }
+    }
+    public void UnRegisterBehaviour(int behaviourCode)
+    {
+        if(currentBehaviour == behaviourCode)
+        {
+            currentBehaviour = defaultBehaviour;
+        }
+    }
+    public bool OverrideWithBehaviour(GenericBehaviour behaviour)
+    {
+        if(!overrideBehaviours.Contains(behaviour))
+        {
+            if(overrideBehaviours.Count == 0)
+            {
+                foreach(GenericBehaviour behaviour1 in behaviours)
+                {
+                    if (behaviour1.isActiveAndEnabled && currentBehaviour == behaviour1.GetBehaviourCode)
+                    {
+                        behaviour1.OnOverride();
+                        break;
+                    }
+                }
+            }
+            overrideBehaviours.Add(behaviour);
+            return true;
+        }
+        return false;
+    }
+    public bool RevokeOverridingBehaviour(GenericBehaviour behaviour)
+    {
+        if(overrideBehaviours.Contains(behaviour))
+        {
+            overrideBehaviours.Remove(behaviour);
+            return true;
+        }
+        return false;
+    }
+    public bool IsOverriding(GenericBehaviour behaviour = null)
+    {
+        if(behaviour == null)
+        {
+            return overrideBehaviours.Count > 0;
+        }
+        return overrideBehaviours.Contains(behaviour);
+    }
+    public bool IsCurrentBehaviour(int behaviourCode)
+    {
+        return this.currentBehaviour == behaviourCode;
+    }
+    public bool GetTempLockStatus(int behaviourCode = 0)
+    {
+        return (behaviourLocked != 0 && behaviourLocked != behaviourCode);
+    }
+    public void LockTempBehaviour(int behaviourCode)
+    {
+        if(behaviourLocked == 0)
+        {
+            behaviourLocked = behaviourCode;
+        }
+    }
+    public void UnLockTempBehaviour(int behaviourCode)
+    {
+        if(behaviourLocked == behaviourCode)
+        {
+            behaviourLocked = 0;
+        }
+    }
+    public Vector3 GetLastDirection()
+    {
+        return lastDirection;
+    }
+    public void SetLastDirection(Vector3 direction)
+    {
+        lastDirection = direction;
     }
 }
 

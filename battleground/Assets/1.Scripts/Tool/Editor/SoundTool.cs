@@ -36,13 +36,13 @@ public class SoundTool : EditorWindow
         EditorGUILayout.BeginVertical();
         {
             UnityObject source = soundSource;
-            SoundClip sound = soundData.soundClips[selection];
             EditorHelper.EditorToolTopLayer(soundData, ref selection, ref source, uiWidthMiddle);
             soundSource = (AudioClip)source;
 
             EditorGUILayout.BeginHorizontal();
             {
                 EditorHelper.EditorToolListLayer(ref SP1, soundData, ref selection, ref source, uiWidthMiddle);
+                //SoundClip sound = soundData.soundClips[selection];
                 soundSource = (AudioClip)source;
 
                 EditorGUILayout.BeginVertical();
@@ -54,6 +54,7 @@ public class SoundTool : EditorWindow
                             EditorGUILayout.BeginVertical();
                             {
                                 EditorGUILayout.Separator();
+                                SoundClip sound = soundData.soundClips[selection];
                                 EditorGUILayout.LabelField("ID", selection.ToString(), GUILayout.Width(uiWidthLarge));
                                 soundData.names[selection] = EditorGUILayout.TextField("Name", soundData.names[selection], GUILayout.Width(uiWidthLarge));
                                 sound.playType = (SoundPlayType)EditorGUILayout.EnumPopup("PlayType", sound.playType, GUILayout.Width(uiWidthLarge));
@@ -61,15 +62,15 @@ public class SoundTool : EditorWindow
                                 sound.isLoop = EditorGUILayout.Toggle("LoopClip", sound.isLoop, GUILayout.Width(uiWidthLarge));
                                 EditorGUILayout.Separator();
 
-                                if (this.soundSource == null && sound.clipName != string.Empty)
+                                if (this.soundSource == null && sound.soundName != string.Empty)
                                 {
-                                    this.soundSource = Resources.Load(sound.clipPath + sound.clipName) as AudioClip;
+                                    this.soundSource = Resources.Load(sound.soundPath + sound.soundName) as AudioClip;
                                 }
                                 this.soundSource = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", this.soundSource, typeof(AudioClip), false, GUILayout.Width(uiWidthLarge));
                                 if(soundSource != null)
                                 {
-                                    sound.clipPath = EditorHelper.GetPath(soundSource);
-                                    sound.clipName = soundSource.name;
+                                    sound.soundPath = EditorHelper.GetPath(soundSource);
+                                    sound.soundName = soundSource.name;
                                     sound.pitch = EditorGUILayout.Slider("pitch", sound.pitch, -3.0f, 3.0f, GUILayout.Width(uiWidthLarge));
                                     sound.dopplerLevel = EditorGUILayout.Slider("doppler", sound.dopplerLevel, 0.0f, 5.0f, GUILayout.Width(uiWidthLarge));
                                     sound.rolloffMode = (AudioRolloffMode)EditorGUILayout.EnumPopup("volume Rolloff", sound.rolloffMode, GUILayout.Width(uiWidthLarge));
@@ -80,8 +81,8 @@ public class SoundTool : EditorWindow
                                 }
                                 else
                                 {
-                                    sound.clipName = string.Empty;
-                                    sound.clipPath = string.Empty;
+                                    sound.soundName = string.Empty;
+                                    sound.soundPath = string.Empty;
                                 }
                                 EditorGUILayout.Separator();
                                 if (GUILayout.Button("Add Loop", GUILayout.Width(uiWidthMiddle)))
@@ -140,7 +141,7 @@ public class SoundTool : EditorWindow
     {
         string enumName = "SoundList";
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < soundData.name.Length; i++)
+        for (int i = 0; i < soundData.names.Length; i++)
         {
             if(!soundData.names[i].ToLower().Contains("none"))
             {

@@ -1,4 +1,9 @@
-﻿
+﻿public enum WeaponType
+{
+    NONE,
+    SHORT,
+    LONG,
+}
 public enum EffectType
 {
     None = -1,

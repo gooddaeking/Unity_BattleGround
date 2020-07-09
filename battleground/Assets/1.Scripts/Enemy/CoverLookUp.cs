@@ -16,7 +16,7 @@ public class CoverLookUp : MonoBehaviour
     private GameObject[] covers;
     private List<int> coverHashCodes;                   // 커버 유니크 아이디;
 
-    private Dictionary<float, Vector3> fillteredSpots;  // 제외할 커버
+    private Dictionary<float, Vector3> fillteredSpots;  // 필터링된 지점들
 
     private GameObject[] GetObjectsInLayerMask(int layerMask)
     {

@@ -16,7 +16,7 @@ public class EnemyVariables
 
     // 반복을 위해 결정할 변수
     public bool repeatShot;
-    public float waitCoverTime;
+    public float waitInCoverTime;
     public float coverTime;
 
     // 정찰을 위해 결정할 변수

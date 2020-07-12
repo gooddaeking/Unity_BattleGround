@@ -1,9 +1,6 @@
-﻿using NPOI.SS.Formula.Functions;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Build.Content;
-using UnityEditor.Purchasing;
 using UnityEngine;
 
 //루프, 페이드 관련 속성, 오디오 클립 속성들.

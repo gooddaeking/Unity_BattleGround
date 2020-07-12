@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 using System.Xml;
 using System.IO;
-using NPOI.SS.Formula.Functions;
 
 /// <summary>
 /// 이펙트 클립 리스트와 이펙트 파일이름과 경로를 가지고 있으며

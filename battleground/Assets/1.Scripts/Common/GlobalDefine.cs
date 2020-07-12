@@ -1,4 +1,5 @@
-﻿public enum WeaponType
+﻿using UnityEngine;
+public enum WeaponType
 {
     NONE,
     SHORT,

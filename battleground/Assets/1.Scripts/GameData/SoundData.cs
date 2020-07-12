@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 using System.Xml;
 using System.IO;
-using NPOI.SS.Formula.Functions;
 /// <summary>
 /// 사운드 클립을 배열로 소지.
 /// 사운드 데이터를 저장하고 로드한다.

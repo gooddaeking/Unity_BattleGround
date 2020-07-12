@@ -1,10 +1,8 @@
-﻿using NPOI.HPSF;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.EnterpriseServices;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
 
 /// <summary>
 /// 숨을 곳을 찾아주는 컴포넌트.

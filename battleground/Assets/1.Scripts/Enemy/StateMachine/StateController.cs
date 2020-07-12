@@ -12,7 +12,7 @@ public class StateController : MonoBehaviour
 {
     public GeneralStats generalStats;
     public ClassStats statsData;
-    public string classID;              // pistol, rifle, ak,
+    public string classID;              // PISTOL, RIFLE, AK,
 
     public ClassStats.Param classStats
     {

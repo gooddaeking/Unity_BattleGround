@@ -18,7 +18,7 @@ public class InteractiveWeapon : MonoBehaviour
     public Sprite weaponSprite;
     public Vector3 rightHandPosition;   // 플레이어 오른손에 보정위치
     public Vector3 relativeRotation;    // 플레이어에 맞춘 보정을 위한 회전값
-    public float bulletDamage = 10.0f;
+    public float bulletDamage = 20.0f;
     public float recoilAngle;           // 반동
     public enum WeaponType
     {

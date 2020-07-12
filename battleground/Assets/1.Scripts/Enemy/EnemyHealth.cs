@@ -77,6 +77,13 @@ public class EnemyHealth : HealthBase
         anim.enabled = false;
         Destroy(weapon.gameObject);
         Destroy(hud.gameObject);
+
+        Vector3 dead = new Vector3(0, -100, 0);
+        transform.position -= dead;
+
+        gameObject.SetActive(false);
+        Destroy(gameObject);
+
         IsDead = true;
     }
     public override void TakeDamage(Vector3 location, Vector3 direction, float damage, Collider bodyPart = null, GameObject origin = null)

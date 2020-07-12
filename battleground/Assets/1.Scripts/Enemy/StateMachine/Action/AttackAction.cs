@@ -1,5 +1,4 @@
 ﻿using FC;
-using NPOI.HPSF;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +15,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName ="PluggableAI/Actions/Attack")]
 public class AttackAction : Action
 {
-    private readonly float startShootDelay = 0.2f;
+    private readonly float startShootDelay = 0.1f;
     private readonly float aimAngleGap = 30.0f;
 
     public override void OnReadyAction(StateController controller)
@@ -103,7 +102,7 @@ public class AttackAction : Action
             controller.enemyAnimation.anim.SetTrigger(AnimatorKey.Shooting);
             CastShot(controller);
         }
-        else if(controller.variables.shotTimer >= (0.1f + 2.0f * Time.deltaTime))
+        else if(controller.variables.shotTimer >= (0.1f * 2.0f * Time.deltaTime))
         {
             controller.bullets = Mathf.Max(--controller.bullets, 0);
             controller.variables.currentShots++;

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8396988bb0012c34fbf9fa4e0c898d4c, type: 3}
   m_Name: WaitedDecision
   m_EditorClassIdentifier: 
-  maxTimeToWait: 1
+  maxTimeToWait: 0.2

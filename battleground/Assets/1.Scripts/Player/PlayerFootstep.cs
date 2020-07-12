@@ -56,7 +56,7 @@ public class PlayerFootstep : MonoBehaviour
             PlayFootStep();
         }
         grounded = myAnimator.GetBool(groundedBool);
-        float factor = 0.15f;
+        float factor = 0.125f;
 
         if(grounded && myAnimator.velocity.magnitude > 1.6f)
         {

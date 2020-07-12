@@ -162,10 +162,10 @@ public class SoundData : BaseData
 
             //읽어놓으면 게임중 버벅임을 방지할 수 있다.
             //게임 시작이 너무 무거우면 안써도 무방하다.
-            foreach (SoundClip clip in soundClips)
-            {
-                clip.PreLoad();
-            }
+            //foreach (SoundClip clip in soundClips)
+            //{
+            //    clip.PreLoad();
+            //}
         }
     }
 

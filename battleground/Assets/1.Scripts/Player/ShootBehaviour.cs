@@ -179,7 +179,7 @@ public class ShootBehaviour : GenericBehaviour
                     DrawShoot(weapons[weapon].gameObject, hit.point, hit.normal, hit.collider.transform, !isOrganic, !isOrganic);
                     if(hit.collider)
                     {
-                        hit.collider.SendMessageUpwards("HitCallback", new HealthBase.DamageInfo(hit.point, ray.direction, weapons[weapon].bulletDamage, hit.collider),
+                        hit.collider.SendMessageUpwards("HitCallBack", new HealthBase.DamageInfo(hit.point, ray.direction, weapons[weapon].bulletDamage, hit.collider),
                             SendMessageOptions.DontRequireReceiver);
                     }
                 }

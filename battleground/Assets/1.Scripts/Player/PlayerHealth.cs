@@ -37,7 +37,7 @@ public class PlayerHealth : HealthBase
 
     private void Update()
     {
-        if(placeHolderBar.sizeDelta.x > healthBar.sizeDelta.x)
+        if (placeHolderBar.sizeDelta.x > healthBar.sizeDelta.x)
         {
             placeHolderBar.sizeDelta = Vector2.Lerp(placeHolderBar.sizeDelta, healthBar.sizeDelta, 2.0f * Time.deltaTime);
         }
@@ -75,11 +75,11 @@ public class PlayerHealth : HealthBase
 
         UpdateHealthBar();
 
-        if(health <= 0)
+        if (health <= 0)
         {
             Kill();
         }
-        else if(health <= criticalHealth && !critical)
+        else if (health <= criticalHealth && !critical)
         {
             critical = true;
         }
